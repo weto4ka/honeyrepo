@@ -14,8 +14,10 @@ Placeholders you can use inside `--wrap`:
 
 | Wrapper | Status |
 |---|---|
-| `unshare --map-root-user --net` | Run on Linux: LEAKED without it, HELD with it, INCONCLUSIVE with a broken flag |
-| `bwrap ...` (three variants) | **Not run yet.** Written from the bubblewrap manual. Expected results are listed, so a different result means the command or the sandbox needs a look |
+| `unshare --map-root-user --net` | Run on Linux and on WSL2 (Ubuntu 24.04): HELD, as expected. Broken flag gives INCONCLUSIVE |
+| `bwrap ...` (three variants) | Run on WSL2, Ubuntu 24.04, bubblewrap 0.9.0: all three gave the expected verdict (a: LEAKED, b: HELD, c: HELD) |
+
+`bash scripts/sandbox-check.sh` reproduces this table. Other distributions and kernels are untested.
 
 ## Windows: use WSL2
 
