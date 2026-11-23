@@ -10,8 +10,11 @@ from pathlib import Path
 import honeyrepo
 from honeyrepo.scenario import Scenario, parse
 
+# The package that is being tested: the source tree, an editable install, or an installed copy.
 SRC = Path(honeyrepo.__file__).resolve().parent
-ROOT = SRC.parents[1]
+# The repository (pyproject.toml, docs/, README.md). It is found from the tests directory, not from the
+# package: with `pip install .` the package lives in site-packages, far away from the repository.
+ROOT = Path(__file__).resolve().parent.parent
 DEMO_WRAPPER = SRC / "demo_block_network.py"
 IS_POSIX = os.name == "posix"
 IS_ROOT = IS_POSIX and os.geteuid() == 0

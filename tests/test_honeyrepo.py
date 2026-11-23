@@ -6,6 +6,7 @@ import subprocess
 import sys
 import tomllib
 import unittest
+from pathlib import Path
 
 import support
 
@@ -13,6 +14,13 @@ import honeyrepo
 
 
 class PackagingTests(unittest.TestCase):
+    def test_the_repository_root_is_found_from_the_tests(self):
+        # Regression: ROOT was derived from the imported package, which is in site-packages after
+        # `pip install .`, so every test that reads pyproject.toml or docs/ failed in CI.
+        self.assertEqual(support.ROOT, Path(__file__).resolve().parent.parent)
+        for name in ("pyproject.toml", "README.md", "docs"):
+            self.assertTrue((support.ROOT / name).exists(), f"{name} is not in {support.ROOT}")
+
     def pyproject(self):
         return tomllib.loads((support.ROOT / "pyproject.toml").read_text(encoding="utf-8"))
 

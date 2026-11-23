@@ -46,7 +46,9 @@ class ClassificationTests(unittest.TestCase):
 
     def test_describe_names_the_errno(self):
         info = attacker.describe(OSError(errno.ENETUNREACH, "Network is unreachable"))
-        self.assertEqual((info["error"], info["errno_name"]), ("OSError", "ENETUNREACH"))
+        self.assertEqual((info["error"], info["errno"]), ("OSError", errno.ENETUNREACH))
+        # Python on Windows reports socket errors under their Winsock names.
+        self.assertIn(info["errno_name"], {"ENETUNREACH", "WSAENETUNREACH"})
         self.assertIsNone(attacker.describe(ValueError("x"))["errno"])
 
     def test_listener_url_parsing(self):
