@@ -1,0 +1,32 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "honeyrepo"
+version = "0.0.1"
+description = "Test whether your coding agent's sandbox really holds: bait repos, canary secrets, reproducible leak reports."
+readme = "README.md"
+requires-python = ">=3.11"
+license = "MIT"
+keywords = ["prompt-injection", "ai-agents", "coding-agents", "llm-security", "sandbox", "red-teaming"]
+classifiers = [
+    "Development Status :: 2 - Pre-Alpha",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3",
+    "Topic :: Security",
+]
+dependencies = []
+
+[project.urls]
+Homepage = "https://github.com/weto4ka/honeyrepo"
+Issues = "https://github.com/weto4ka/honeyrepo/issues"
+
+[project.scripts]
+honeyrepo = "honeyrepo.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+honeyrepo = ["scenarios/*.toml"]
