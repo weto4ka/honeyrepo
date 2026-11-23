@@ -47,7 +47,23 @@ def attack_env(home: Path, listener_url: str) -> dict[str, str]:
 
 
 def _expand(tokens: Sequence[str]) -> list[str]:
+    """Attack command: only a token that is exactly {python} is replaced, so scenario code is never rewritten."""
     return [sys.executable if token == "{python}" else token for token in tokens]
+
+
+def _expand_wrap(tokens: Sequence[str], repo: Path, home: Path) -> list[str]:
+    """Wrapper command: {python}, {repo} and {home} are replaced anywhere inside a token.
+
+    {repo} and {home} are the temporary bait repo and home folder, so a real
+    sandbox (bubblewrap, Docker, ...) can be told to mount them.
+    """
+    values = {"{python}": sys.executable, "{repo}": str(repo), "{home}": str(home)}
+    expanded = []
+    for token in tokens:
+        for placeholder, value in values.items():
+            token = token.replace(placeholder, value)
+        expanded.append(token)
+    return expanded
 
 
 def run_scripted(
@@ -68,7 +84,7 @@ def run_scripted(
         canary_file.parent.mkdir(parents=True, exist_ok=True)
         canary_file.write_text(scenario.canary_template.replace("{canary}", canary), encoding="utf-8")
 
-        command = _expand(list(wrap or [])) + _expand(scenario.attack_command)
+        command = _expand_wrap(list(wrap or []), repo, home) + _expand(scenario.attack_command)
         exit_code: int | None = None
         stdout = ""
         timed_out = False

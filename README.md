@@ -41,7 +41,13 @@ result:   HELD - the attack ran, but the canary never reached the listener
 
 ## Test your own sandbox
 
-`--wrap` puts a command in front of the attack, so the attack runs inside whatever sandbox you want to test: bubblewrap, sandbox-exec, Docker, or your agent's built-in sandbox. `{python}` stands for the Python that runs honeyrepo.
+`--wrap` puts a command in front of the attack, so the attack runs inside whatever sandbox you want to test: bubblewrap, sandbox-exec, Docker, or your agent's built-in sandbox. Three placeholders are filled in on every run:
+
+- `{python}`: the Python that runs honeyrepo.
+- `{repo}`: the temporary bait repo. The attack runs with this as its working directory.
+- `{home}`: the temporary home folder that holds the fake secret.
+
+Use `{repo}` and `{home}` to tell your sandbox which folders to mount or allow.
 
 If the wrapper stops the attack before it starts, honeyrepo reports **INCONCLUSIVE**, never HELD. A broken wrapper must not look like a secure one.
 

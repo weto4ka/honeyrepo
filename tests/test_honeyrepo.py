@@ -58,6 +58,21 @@ class RunnerTests(unittest.TestCase):
         )
         self.assertEqual(result.verdict, "INCONCLUSIVE")
 
+    def test_wrap_placeholders_expand_to_the_bait_folders(self):
+        # The wrapper fails (no attack marker, so INCONCLUSIVE) unless {repo} and {home}
+        # point at the real bait repo and the real home with the fake secret in it.
+        checker = (
+            "import os, subprocess, sys\n"
+            "repo, home, *command = sys.argv[1:]\n"
+            "assert os.path.isfile(os.path.join(repo, 'README.md')), 'repo placeholder is wrong'\n"
+            "assert os.path.isfile(os.path.join(home, '.env')), 'home placeholder is wrong'\n"
+            "sys.exit(subprocess.call(command))\n"
+        )
+        result = run_scripted(
+            load("readme-exfil"), wrap=["{python}", "-c", checker, "{repo}", "{home}"]
+        )
+        self.assertEqual(result.verdict, "LEAKED")
+
     def test_real_environment_variables_do_not_reach_the_attack(self):
         with mock.patch.dict(os.environ, {"MY_API_KEY": "do-not-leak", "HTTPS_PROXY": "http://x"}):
             env = attack_env(Path("home"), "http://127.0.0.1:1")

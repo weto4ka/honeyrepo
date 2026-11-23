@@ -31,7 +31,11 @@ def build_parser() -> argparse.ArgumentParser:
     run.add_argument("scenario", help="name of a built-in scenario, or path to a .toml file")
     run.add_argument(
         "--wrap",
-        help="command prefix that runs the attack inside your sandbox; {python} means this Python",
+        help=(
+            "command prefix that runs the attack inside your sandbox. "
+            "{python} is this Python; {repo} and {home} are the temporary bait repo and "
+            "home folder, so your sandbox can mount them"
+        ),
     )
     run.add_argument("--json", action="store_true", dest="as_json", help="print the result as JSON")
     run.add_argument("--timeout", type=float, default=30.0, help="seconds before the attack is stopped")
