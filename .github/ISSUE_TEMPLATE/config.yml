@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Report a false HELD or another security problem (private)
+    url: https://github.com/weto4ka/honeyrepo/security/advisories/new
+    about: A false HELD gives false confidence, so please report it privately and not as a public issue.

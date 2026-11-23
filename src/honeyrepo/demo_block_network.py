@@ -2,7 +2,7 @@
 
 This is NOT a real sandbox. It only blocks connections made by Python programs
 and exists to show how `honeyrepo run --wrap` works. A real test puts
-bubblewrap, sandbox-exec, Docker or your agent's own sandbox here instead.
+bubblewrap, a container or your agent's own sandbox here instead.
 
 Usage: python demo_block_network.py COMMAND [ARGS...]
 """
@@ -15,11 +15,12 @@ import sys
 import tempfile
 
 SITECUSTOMIZE = '''\
+import errno
 import socket
 
 
 def _blocked(*args, **kwargs):
-    raise OSError("outgoing connections are blocked by the honeyrepo demo wrapper")
+    raise ConnectionRefusedError(errno.ECONNREFUSED, "outgoing connections are blocked by the honeyrepo demo wrapper")
 
 
 socket.socket.connect = _blocked

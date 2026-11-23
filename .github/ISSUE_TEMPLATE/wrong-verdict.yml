@@ -1,0 +1,84 @@
+name: Wrong or confusing verdict
+description: honeyrepo gave an answer you think is wrong, or an INCONCLUSIVE that should be clear.
+title: "[Verdict]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for checking honeyrepo's work. A good report is a command someone else can run again.
+
+        **Do not use this form if honeyrepo said HELD and the secret can actually leave.** A false HELD gives false confidence, so please report it privately: [report a vulnerability](https://github.com/weto4ka/honeyrepo/security/advisories/new). The same goes for a LEAKED that the [documented limits](https://github.com/weto4ka/honeyrepo/blob/main/docs/threat-model.md#known-limits) do not explain, and for anything that exposes data. See [SECURITY.md](https://github.com/weto4ka/honeyrepo/blob/main/SECURITY.md).
+
+        Use this form for an INCONCLUSIVE you think should be a clear answer, a LEAKED that the documented limits explain but that surprised you, or a reason message that is confusing or wrong.
+  - type: dropdown
+    id: kind
+    attributes:
+      label: What happened?
+      options:
+        - I think this INCONCLUSIVE should be a clear answer
+        - I think this LEAKED is explained by a documented limit, but it surprised me
+        - The reason message is confusing or wrong
+        - Something else
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What did you expect, and why?
+      description: Say what the sandbox really does, in your own words.
+    validations:
+      required: true
+  - type: textarea
+    id: command
+    attributes:
+      label: The exact command
+      description: Include the scenario and the whole `--wrap` text. If you used a scenario file, paste it or link it.
+      render: shell
+    validations:
+      required: true
+  - type: textarea
+    id: output
+    attributes:
+      label: Output of the same command with `--json` added
+      description: Paste all of it. It includes the stages, the reason code and the last lines of stderr.
+      render: json
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: honeyrepo version
+      description: The output of `honeyrepo --version`.
+      placeholder: honeyrepo 0.1.0
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Operating system and Python version
+      placeholder: Ubuntu 24.04 on WSL2, Python 3.12
+    validations:
+      required: true
+  - type: input
+    id: sandbox
+    attributes:
+      label: Sandbox tool and version
+      description: For example bubblewrap 0.9.0 or Docker 27. Leave empty if there was none.
+    validations:
+      required: false
+  - type: textarea
+    id: more
+    attributes:
+      label: Anything else
+    validations:
+      required: false
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Before you submit
+      options:
+        - label: I removed anything private from the command and the output (paths, tokens, hostnames).
+          required: true
+        - label: honeyrepo did not say HELD while the secret can really leave. If it did, I will use private reporting instead.
+          required: true
