@@ -73,7 +73,7 @@ Where honeyrepo can mislead you:
 4. **One file, one path, one tool.** The built-in attack reads one file and sends it with one HTTP POST from Python. A sandbox that treats other files, other protocols or other programs differently may behave differently.
 5. **`read-hidden` cannot tell a hiding rule from a missing mount.** If the folder with the canary is not visible but the bait repo is, honeyrepo reports HELD. It cannot know whether you meant that.
 6. **Detection is not exhaustive.** honeyrepo decodes plain text, percent-encoding, JSON and `\u`/`\x` escapes, base64, base32, hex, gzip/zlib/deflate, chunked bodies, reversed text and a secret split over requests, up to three layers. Encryption and custom ciphers are not detected. Undecodable data gives INCONCLUSIVE, not HELD, but you then have to look at it yourself.
-7. **Processes that leave the process group can survive.** An attack that starts a process in a new session is not stopped by honeyrepo. If such a process keeps the output open, honeyrepo reports a warning. Windows process cleanup uses `taskkill` and has not been tested. On POSIX the group is stopped by its ID after the attack exits; in theory that ID could be reused by an unrelated process in the instant between the two, though the group is normally still alive then.
+7. **Processes that leave the process group can survive.** An attack that starts a process in a new session is not stopped by honeyrepo. If such a process keeps the output open, honeyrepo reports a warning. Windows process cleanup uses `taskkill`. The timeout test runs and passes on Windows, but the test that checks that a child process is stopped needs `/proc` and is skipped there, so nothing checks that `taskkill` stops child processes. On POSIX the group is stopped by its ID after the attack exits; in theory that ID could be reused by an unrelated process in the instant between the two, though the group is normally still alive then.
 8. **A script is not an agent.** Results say nothing about how Claude Code, Codex or any other agent behaves.
 9. **A forged report can forge a HELD.** The attacker's stage lines are evidence, and HELD also needs an empty listener, but a wrapper or custom attack that prints false stage lines is trusted code. See the trust boundary above.
 
@@ -86,7 +86,7 @@ This table says what was actually run. "Not run" means no result exists, not tha
 | Linux, Python 3.11, 3.12, 3.13, as root and as an unprivileged user: full test suite, `sandbox-check.sh` rows for no sandbox, `unshare --net` and the three "not a sandbox" rows | Run against 0.1.0 |
 | Linux: wheel built, installed into a clean virtual environment, CLI run from there | Run against 0.1.0 |
 | WSL2 (Ubuntu 24.04.2 LTS, bubblewrap 0.9.0; checkout under `/mnt/d`): all eight rows of `sandbox-check.sh`, including the three `bwrap` rows | Run against 0.1.0: all eight matched |
-| GitHub Actions, Ubuntu, Python 3.11 to 3.13 | Run with 0.0.1. Not run with 0.1.0 until pushed |
-| Native Windows | Test suite run with 0.0.1. Not run with 0.1.0 |
-| macOS | Not run |
+| GitHub Actions, Ubuntu, macOS and Windows, Python 3.11 to 3.13 (nine jobs): full test suite | Passed against 0.1.0 (commit `8fb0da1`). Tests that need `/proc` or POSIX tools are skipped where the platform lacks them. |
+| GitHub Actions, Ubuntu, Python 3.13: wheel built, installed into a clean virtual environment, run with no sandbox | Passed against 0.1.0: LEAKED, exit code 1, which is the correct result without a sandbox |
+| Sandboxes on native Windows and macOS | Not run. The test suite passes there, but no sandbox tool was run, so what honeyrepo would report about a sandbox on those systems is unverified |
 | Docker | Not run, not supported yet |
