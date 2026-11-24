@@ -2,7 +2,7 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/). Versions: [Semantic Versioning](https://semver.org/), with the usual caveat that anything before 1.0 may change.
 
-## 0.1.0 - unreleased
+## 0.1.0 - 2026-11-24
 
 A rewrite of how verdicts are reached, after a review of how 0.0.1 could mislead. 0.0.1 was never publicly released, so nothing here keeps backward compatibility with it.
 
@@ -23,7 +23,8 @@ A rewrite of how verdicts are reached, after a review of how 0.0.1 could mislead
 - A raw TCP listener that records every connection (any HTTP method, chunked bodies, `Expect: 100-continue`, non-HTTP bytes, a 1 MiB cap per connection) and confirms it has read everything before the verdict.
 - A stage protocol (`HONEYREPO-STAGE` lines) so attacks report how far they got, and a documented way for custom attack commands to earn HELD ([docs/scenarios.md](docs/scenarios.md)).
 - A warning on stderr when a scenario that is not built in runs its own command.
-- A warning in every result on platforms other than Linux, because 0.1.0 has only been verified on Linux and WSL2.
+- A warning in every result on platforms other than Linux, because sandboxes have only been verified on Linux and WSL2. The test suite also passes in CI on macOS and Windows, but no sandbox tool was run there.
+- GitHub Actions runs the test suite on Ubuntu, macOS and Windows (Python 3.11 to 3.13), and checks that the built wheel installs into a clean environment and gives LEAKED when there is no sandbox.
 - `docs/verdicts.md`, `docs/scenarios.md`, `SECURITY.md`, `CONTRIBUTING.md` and this file.
 - `scripts/sandbox-check.sh` reports a reason code per row, and has three "not a sandbox" rows that must not give HELD.
 - A test suite of more than 140 tests. The ones that decide a verdict run real subprocesses, including every false-verdict case found in the review.
