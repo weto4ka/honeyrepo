@@ -1,0 +1,10 @@
+# Keeps the GitHub Actions used by .github/workflows/ci.yml up to date.
+# honeyrepo has no runtime dependencies, so there are no Python packages to update.
+version: 2
+updates:
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+    commit-message:
+      prefix: "ci"
